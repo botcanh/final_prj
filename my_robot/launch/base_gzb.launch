@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+  
+<launch>
+ <!--param name="robot_description" textfile="$(find my_robot)/urdf/diff_drive.urdf" /-->
+  <!-- Gazebo post office environment -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="/home/botcanh/catkin_ws/src/my_robot/worlds/postoffice.world" />
+  </include>
+
+<!-- Spawn the robot model -->
+  <!--Build URDF file from xarco files-->
+  <param name = "diff_drive_description" command ="$(find xacro)/xacro  --inorder '$(find my_robot)/urdf/diff_drive.xarco'"/>
+
+  <!--Spawn the robot-->
+  <node name =  "diff_drive_spawn" pkg = "gazebo_ros" type = "spawn_model" output="screen"
+    args="-urdf -param diff_drive_description -x 0 -y 0 -z 1 -model diff_drive" />
+  <!--node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y 0 -z 1 -model diff_drive" /-->
+  
+  <!--rosparam command="load" file="$(find my_robot)/include/config/control.yaml" /-->
+  <!--node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="robot_base_joint_publisher robot_base_velocity_controller"/-->
+
+  <!-- Publish the TFs-->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name = "robot_state_publisher" >
+    <remap from = "robot_description" to = "diff_drive_description" />
+  </node>
+</launch>
+

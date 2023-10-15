@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot name="rb_xarco" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!--BOX XARCO-->
+    <xacro:property name="box_x" value="0.35" />
+    <xacro:property name="box_y" value="0.29" />
+    <xacro:property name="box_z" value="0.08" />
+    <xacro:property name="box_mass" value="7.2" />
+    <xacro:property name="box_xx" value="0.057839999999999996" />
+    <xacro:property name="box_yy" value="0.057839999999999996" />
+    <xacro:property name="box_zz" value="0.108" />
+
+    <!--CYLINDER XARCO-->
+    <xacro:property name="cylinder_radius" value="0.033" />
+    <xacro:property name="cylinder_height" value="0.033" /> 
+    <xacro:property name="cylinder_mass" value="0.113" />   
+    <xacro:property name="cylinder_xx" value="4.101900000000001e-05" />
+    <xacro:property name="cylinder_yy" value="4.101900000000001e-05" />
+    <xacro:property name="cylinder_zz" value="6.15285e-05" />
+
+    <!--SPHERE XARCO-->
+    <xacro:property name="sphere_radius" value="0.033" /> 
+    <xacro:property name="sphere_mass" value="0.15" />   
+    <xacro:property name="sphere_xx" value="6.534000000000001e-05" />
+    <xacro:property name="sphere_yy" value="6.534000000000001e-05" />
+    <xacro:property name="sphere_zz" value="6.534000000000001e-05" />
+
+    <!--HOKUYO XARCO-->
+    <xacro:property name="hokuyo_radius" value="0.033" />
+    <xacro:property name="hokuyo_height" value="0.015" />
+    <xacro:property name="hokuyo_xx" value="1e-6" />
+    <xacro:property name="hokuyo_yy" value="1e-6" />
+    <xacro:property name="hokuyo_zz" value="1e-6" />
+</robot>
