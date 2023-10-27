@@ -204,3 +204,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(ekf_odom_pub src/ekf_odom_pub.cpp)
+target_link_libraries(ekf_odom_pub ${catkin_LIBRARIES})
+add_executable(joint_msg_pub src/joint_msg_pub.cpp)
+target_link_libraries(joint_msg_pub ${catkin_LIBRARIES})
