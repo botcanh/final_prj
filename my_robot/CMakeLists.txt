@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -206,5 +207,12 @@ include_directories(
 # catkin_add_nosetests(test)
 add_executable(ekf_odom_pub src/ekf_odom_pub.cpp)
 target_link_libraries(ekf_odom_pub ${catkin_LIBRARIES})
+
 add_executable(joint_msg_pub src/joint_msg_pub.cpp)
 target_link_libraries(joint_msg_pub ${catkin_LIBRARIES})
+
+INCLUDE_DIRECTORIES(/usr/local/lib)
+LINK_DIRECTORIES(/usr/local/lib)
+ 
+add_executable(rviz_click_to_2d src/rviz_click_to_2d.cpp)
+target_link_libraries(rviz_click_to_2d ${catkin_LIBRARIES})

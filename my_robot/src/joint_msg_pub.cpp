@@ -6,7 +6,7 @@ int right_ticks = 0;
 int left_ticks = 0;
 
 const double PI = 3.141592;
-const int TICKS_PER_REVOLUTION = 4200; 
+const int TICKS_PER_REVOLUTION = 535; 
 
 void rightTicksCallback(const std_msgs::Int16::ConstPtr& msg) {
     right_ticks = (msg->data + 32768) % TICKS_PER_REVOLUTION; //INT16 range

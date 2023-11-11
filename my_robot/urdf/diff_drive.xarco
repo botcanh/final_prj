@@ -123,7 +123,7 @@
     <parent link = "diff_base"/>
     <child link = "lwheel"/>
     <origin xyz = "-${box_x / 4} ${2* box_y / 5} -${box_z / 2}"/>
-    <axis xyz = " 0 1 0"/>
+    <axis xyz = " 0 -1 0"/>
     <limit effort = "100" velocity="100"/>
   </joint>
 

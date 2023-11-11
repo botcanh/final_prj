@@ -1,30 +1,3 @@
-/*
- * Automatic Addison
- * Date: May 20, 2021
- * ROS Version: ROS 1 - Melodic
- * Website: https://automaticaddison.com
- * Publishes odometry information for use with robot_pose_ekf package.
- *   This odometry information is based on wheel encoder tick counts.
- * Subscribe: ROS node that subscribes to the following topics:
- *  right_ticks : Tick counts from the right motor encoder (std_msgs/Int16)
- * 
- *  left_ticks : Tick counts from the left motor encoder  (std_msgs/Int16)
- * 
- *  initial_2d : The initial position and orientation of the robot.
- *               (geometry_msgs/PoseStamped)
- *
- * Publish: This node will publish to the following topics:
- *  odom_data_euler : Position and velocity estimate. The orientation.z 
- *                    variable is an Euler angle representing the yaw angle.
- *                    (nav_msgs/Odometry)
- *  odom_data_quat : Position and velocity estimate. The orientation is 
- *                   in quaternion format.
- *                   (nav_msgs/Odometry)
- * Modified from Practical Robotics in C++ book (ISBN-10 : 9389423465)
- *   by Lloyd Brombach
- */
- 
-// Include various libraries
 #include "ros/ros.h"
 #include "std_msgs/Int16.h"
 #include <nav_msgs/Odometry.h>
@@ -46,7 +19,7 @@ const double initialTheta = 0.00000000001;
 const double PI = 3.141592;
  
 // Robot physical constants
-const double TICKS_PER_REVOLUTION = 4200; // For reference purposes.
+const double TICKS_PER_REVOLUTION = 535; // For reference purposes.
 const double WHEEL_RADIUS = 0.033; // Wheel radius in meters
 const double WHEEL_BASE = 0.17; // Center of left tire to center of right tire
 const double TICKS_PER_METER = 3100; // Original was 2800
@@ -60,8 +33,6 @@ bool initialPoseRecieved = false;
  
 using namespace std;
  
- //Get initial_2d message from SLAM (slam_out_pose)
-// Get initial_2d message from either Rviz clicks or a manual pose publisher
 void set_initial_2d(const geometry_msgs::PoseStamped &rvizClick) {
  
   odomOld.pose.pose.position.x = rvizClick.pose.position.x;
@@ -211,6 +182,7 @@ int main(int argc, char **argv) {
    
   // Set the data fields of the odometry message
   odomNew.header.frame_id = "odom";
+  odomNew.child_frame_id = "base_link";
   odomNew.pose.pose.position.z = 0;
   odomNew.pose.pose.orientation.x = 0;
   odomNew.pose.pose.orientation.y = 0;
@@ -231,8 +203,7 @@ int main(int argc, char **argv) {
   // Subscribe to ROS topics
   ros::Subscriber subForRightCounts = node.subscribe("right_ticks", 100, Calc_Right, ros::TransportHints().tcpNoDelay());
   ros::Subscriber subForLeftCounts = node.subscribe("left_ticks", 100, Calc_Left, ros::TransportHints().tcpNoDelay());
-  //change to take data from hector_slam topic : slam_out_pose
-  ros::Subscriber subInitialPose = node.subscribe("slam_out_pose", 1, set_initial_2d);
+  ros::Subscriber subInitialPose = node.subscribe("initial_2d", 1, set_initial_2d);
  
   // Publisher of simple odom message where orientation.z is an euler angle
   odom_data_pub = node.advertise<nav_msgs::Odometry>("odom_data_euler", 100);
