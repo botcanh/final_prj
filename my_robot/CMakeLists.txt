@@ -211,6 +211,9 @@ target_link_libraries(ekf_odom_pub ${catkin_LIBRARIES})
 add_executable(joint_msg_pub src/joint_msg_pub.cpp)
 target_link_libraries(joint_msg_pub ${catkin_LIBRARIES})
 
+add_executable(initial_pose_publisher src/initial_pose_publisher.cpp) 
+target_link_libraries(initial_pose_publisher ${catkin_LIBRARIES})
+
 INCLUDE_DIRECTORIES(/usr/local/lib)
 LINK_DIRECTORIES(/usr/local/lib)
  

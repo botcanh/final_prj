@@ -91,7 +91,7 @@ void publish_quat() {
   nav_msgs::Odometry quatOdom;
   quatOdom.header.stamp = odomNew.header.stamp;
   quatOdom.header.frame_id = "odom";
-  quatOdom.child_frame_id = "base_link";
+  quatOdom.child_frame_id = "diff_base";
   quatOdom.pose.pose.position.x = odomNew.pose.pose.position.x;
   quatOdom.pose.pose.position.y = odomNew.pose.pose.position.y;
   quatOdom.pose.pose.position.z = odomNew.pose.pose.position.z;
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
    
   // Set the data fields of the odometry message
   odomNew.header.frame_id = "odom";
-  odomNew.child_frame_id = "base_link";
+  odomNew.child_frame_id = "diff_base";
   odomNew.pose.pose.position.z = 0;
   odomNew.pose.pose.orientation.x = 0;
   odomNew.pose.pose.orientation.y = 0;
