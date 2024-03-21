@@ -219,3 +219,6 @@ LINK_DIRECTORIES(/usr/local/lib)
  
 add_executable(rviz_click_to_2d src/rviz_click_to_2d.cpp)
 target_link_libraries(rviz_click_to_2d ${catkin_LIBRARIES})
+
+add_executable(test_vel src/testvel.cpp)
+target_link_libraries(test_vel ${catkin_LIBRARIES})

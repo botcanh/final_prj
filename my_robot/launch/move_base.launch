@@ -1,8 +1,8 @@
-<launch>
+ <launch>
 
    <master auto="start"/>
  <!-- Run the map server --> 
-    <node name="map_server" pkg="map_server" type="map_server" args="/home/botcanh/catkin_ws/src/maps/mymap.yaml "/>
+    <node name="map_server" pkg="map_server" type="map_server" args="/home/ubuntu/catkin_ws/src/final_prj/maps/mymap.yaml "/>
 
  <!--- Run AMCL --> 
     <include file="$(find amcl)/examples/amcl_diff.launch" />

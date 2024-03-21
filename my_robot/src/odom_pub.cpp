@@ -63,7 +63,7 @@ void Calc_Left(const std_msgs::Int16& leftCount) {
  
 // Calculate the distance the right wheel has traveled since the last cycle
 void Calc_Right(const std_msgs::Int16& rightCount) {
-  ROS_INFO("callback");
+   
   static int lastCountR = 0;
   if(rightCount.data != 0 && lastCountR != 0) {
  
@@ -79,7 +79,6 @@ void Calc_Right(const std_msgs::Int16& rightCount) {
     distanceRight = rightTicks/TICKS_PER_METER;
   }
   lastCountR = rightCount.data;
-  ROS_INFO("%d",lastCountR);
 }
  
 // Publish a nav_msgs::Odometry message in quaternion format
@@ -177,48 +176,10 @@ void update_odom() {
  
   // Publish the odometry message
   odom_data_pub.publish(odomNew);
-  /*
-  //Broadcast tf
-  tf2_ros::TransformBroadcaster tf_broadcaster;
-  geometry_msgs::TransformStamped odom_to_base_link_tf;
-  odom_to_base_link_tf.header.stamp = odomNew.header.stamp;
-  odom_to_base_link_tf.header.frame_id = "odom";
-  odom_to_base_link_tf.child_frame_id = "base_link";
-  odom_to_base_link_tf.transform.translation.x = odomNew.pose.pose.position.x;
-  odom_to_base_link_tf.transform.translation.y = odomNew.pose.pose.position.y;
-  odom_to_base_link_tf.transform.translation.z = odomNew.pose.pose.position.z;
-  odom_to_base_link_tf.transform.rotation = odomNew.pose.pose.orientation;
-  tf_broadcaster.sendTransform(odom_to_base_link_tf);
-  */
 }
 
-void update_tf()
-{
-  static tf2_ros::TransformBroadcaster br;
-  geometry_msgs::TransformStamped transformStamped;
-
-  transformStamped.header.stamp = ros::Time::now();
-  transformStamped.header.frame_id = "odom";
-  transformStamped.child_frame_id = "base_link";
-  transformStamped.transform.translation.x = odomNew.pose.pose.position.x;
-  transformStamped.transform.translation.y = odomNew.pose.pose.position.y;
-  transformStamped.transform.translation.z = 0;
-
-  tf2::Quaternion q;
-  q.setRPY(0,0, odomNew.pose.pose.orientation.z);
-  transformStamped.transform.rotation.x = q.x();
-  transformStamped.transform.rotation.y = q.y();
-  transformStamped.transform.rotation.z = q.z();
-  transformStamped.transform.rotation.w = q.w();
-
-  br.sendTransform(transformStamped);
-}
 
 int main(int argc, char **argv) {
-
-  // Launch ROS and create a node
-  ros::init(argc, argv, "ekf_odom_pub");
-  ros::NodeHandle node;
    
   // Set the data fields of the odometry message
   odomNew.header.frame_id = "odom";
@@ -236,17 +197,18 @@ int main(int argc, char **argv) {
   odomOld.pose.pose.position.y = initialY;
   odomOld.pose.pose.orientation.z = initialTheta;
  
+  // Launch ROS and create a node
+  ros::init(argc, argv, "odom_pub");
+  ros::NodeHandle node;
  
   // Subscribe to ROS topics
   ros::Subscriber subForRightCounts = node.subscribe("right_ticks", 100, Calc_Right, ros::TransportHints().tcpNoDelay());
   ros::Subscriber subForLeftCounts = node.subscribe("left_ticks", 100, Calc_Left, ros::TransportHints().tcpNoDelay());
   ros::Subscriber subInitialPose = node.subscribe("initial_2d", 1, set_initial_2d);
  
-  // Publisher of simple odom message where orientation.z is an euler angle
-  odom_data_pub = node.advertise<nav_msgs::Odometry>("odom_data_euler", 100);
  
   // Publisher of full odom message where orientation is quaternion
-  odom_data_pub_quat = node.advertise<nav_msgs::Odometry>("odom_data_quat", 100);
+  odom_data_pub_quat = node.advertise<nav_msgs::Odometry>("odom", 100);
  
   ros::Rate loop_rate(30); 
   
@@ -255,7 +217,6 @@ int main(int argc, char **argv) {
     if(initialPoseRecieved) {
       update_odom();
       publish_quat();
-      //update_tf();
     }
     ros::spinOnce();
     loop_rate.sleep();

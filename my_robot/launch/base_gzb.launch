@@ -5,9 +5,14 @@
 <!-- Spawn the robot model -->
   <!--Build URDF file from xarco files-->
   <param name = "robot_description" command ="$(find xacro)/xacro  '$(find my_robot)/urdf/diff_drive.xarco'"/>
-
+  <!-- node pkg="tf" type="static_transform_publisher" name="map_to_base" args="0 0 0 0 0 0 map base_link 30" / -->
   <node pkg = "tf" type = "static_transform_publisher" name = "map_nav_broadcaster" args = "0 0 0 0 0 0 diff_base laser 100" />
   <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 map odom 30" />
+  <!-- node pkg="tf" type="static_transform_publisher" name="base_to_diff_base" args="0 0 0 0 0 0 base_link diff_base 30" / -->
+
+ <!--Publish Odom-->
+  <node pkg="my_robot" type="ekf_odom_pub" name="ekf_odom_pub"/>
+  <!-- remap from="odom" to="odom_data_quat" / -->
 
   <!-- Rosserial -->
   <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
@@ -15,23 +20,15 @@
     <param name="baud" value="115200"/>
   </node>
 
-   <!--Publish Odom-->
-  <node pkg="my_robot" type="ekf_odom_pub" name="ekf_odom_pub"/>
-  <remap from="odom" to="odom_data_quat" />
-
-
-  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
-    <param name="output_frame" value="odom"/>
-    <param name="base_footprint_frame" value="base_link"/>
-    <param name="freq" value="50.0"/>
-    <param name="sensor_timeout" value="1.0"/>
-    <param name="odom_used" value="true"/>
-    <param name="imu_used" value="false"/>
-    <param name="vo_used" value="false"/>
-    <param name="gps_used" value="false"/>
-    <param name="debug" value="false"/>
-    <param name="self_diagnose" value="false"/>
-  </node>
+  <remap from ="odom" to ="odom_data_quat" />
+  <node pkg="robot_pose_ekf" type = "robot_pose_ekf" name="robot_pose_ekf">
+    <param name="output_frame" value = "odom" />
+    <param name="base_footprint_frame" value = "base_link"/>
+    <param name="freq" value="30.0"/>
+    <param name="odom_used" value = "true"/>
+    <param name="imu_used" value = "false"/>
+    <!-- remap from="odom" to ="odom_combined"/ -->
+    </node>
 
 <!-- Initial Pose and Goal Publisher -->
   <!-- Publish: /initialpose, /move_base_simple/goal -->
@@ -41,13 +38,17 @@
   <!-- Publish: /initial_2d, /goal_2d -->
   <node pkg="my_robot" type="rviz_click_to_2d" name="rviz_click_to_2d">
   </node>   
-  <node pkg="my_robot" type="initial_pose_publisher" name="initial_pose_publisher"/>
+  <!-- node pkg="my_robot" type="initial_pose_publisher" name="initial_pose_publisher"/ -->
 
   <!--RP Lidar-->
   <include file = "$(find rplidar_ros)/launch/rplidar.launch"/>
   <!--Hector_Slam-->
-  <!--include file = "$(find hector_slam_launch)/launch/tutorial.launch"/ -->
-
+  <!-- include file = "$(find hector_slam_launch)/launch/tutorial.launch"/ -->
+  <!-- node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output = "screen">
+  <param name ="base_frame" value = "diff_base"/>
+  <param name ="odom_frame" value ="odom"/>
+  <remap from ="scan" to ="/scan"/>
+  </node -->
   
   <!--Publish Joinstate to robot_state_publisher-->
   <node pkg="my_robot" type="joint_msg_pub" name="joint_msg_pub"/>
@@ -62,18 +63,17 @@
   <!-- move_base-->
 
    <master auto="start"/>
- <!-- Run the map server --> 
-    <node name="map_server" pkg="map_server" type="map_server" args="/home/botcanh/catkin_ws/src/maps/mymap.yaml "/>
+ 
+    <node name="map_server" pkg="map_server" type="map_server" args="/home/ubuntu/catkin_ws/src/final_prj/maps/mymap.yaml "/>
 
- <!--- Run AMCL --> 
   <include file="$(find amcl)/examples/amcl_diff.launch" />
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find my_robot)/include/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
-    <rosparam file="$(find my_robot)/include/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find my_robot)/include/config/local_costmap_params.yaml" command="load" ns="local_costmap"/>
-    <rosparam file="$(find my_robot)/include/config/global_costmap_params.yaml" command="load" ns="global_costmap"/> 
-    <rosparam file="$(find my_robot)/include/config/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find my_robot)/include/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+    <rosparam file="$(find my_robot)/include/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find my_robot)/include/local_costmap_params.yaml" command="load" ns="local_costmap"/>
+    <rosparam file="$(find my_robot)/include/global_costmap_params.yaml" command="load" ns="global_costmap"/> 
+    <rosparam file="$(find my_robot)/include/base_local_planner_params.yaml" command="load" />
   </node>  
 
 </launch>
