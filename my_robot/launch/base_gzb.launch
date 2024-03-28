@@ -32,24 +32,14 @@
 
 <!-- Initial Pose and Goal Publisher -->
   <!-- Publish: /initialpose, /move_base_simple/goal -->
-  <node pkg="rviz" type="rviz" name="rviz">
-  </node>
+  <!-- node pkg="rviz" type="rviz" name="rviz">
+  </node -->
     <!-- Subscribe: /initialpose, /move_base_simple/goal -->
   <!-- Publish: /initial_2d, /goal_2d -->
   <node pkg="my_robot" type="rviz_click_to_2d" name="rviz_click_to_2d">
   </node>   
   <!-- node pkg="my_robot" type="initial_pose_publisher" name="initial_pose_publisher"/ -->
 
-  <!--RP Lidar-->
-  <include file = "$(find rplidar_ros)/launch/rplidar.launch"/>
-  <!--Hector_Slam-->
-  <!-- include file = "$(find hector_slam_launch)/launch/tutorial.launch"/ -->
-  <!-- node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output = "screen">
-  <param name ="base_frame" value = "diff_base"/>
-  <param name ="odom_frame" value ="odom"/>
-  <remap from ="scan" to ="/scan"/>
-  </node -->
-  
   <!--Publish Joinstate to robot_state_publisher-->
   <node pkg="my_robot" type="joint_msg_pub" name="joint_msg_pub"/>
   <!-- Publish the TFs-->
@@ -57,12 +47,23 @@
     <param name="publish_frequency" type="double" value="50.0"/>
     <!--remap from = "robot_description" to = "diff_drive_description" / -->
   </node>
+  
+  <!--RP Lidar-->
+  <include file = "$(find rplidar_ros)/launch/rplidar.launch"/>
+  <!--Hector_Slam-->
+  <include file = "$(find hector_slam_launch)/launch/tutorial.launch"/>
+  <!-- node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output = "screen">
+  <param name ="base_frame" value = "diff_base"/>
+  <param name ="odom_frame" value ="odom"/>
+  <remap from ="scan" to ="/scan"/>
+  </node -->
+  
 
 
 
   <!-- move_base-->
 
-   <master auto="start"/>
+   <!-- master auto="start"/>
  
     <node name="map_server" pkg="map_server" type="map_server" args="/home/ubuntu/catkin_ws/src/final_prj/maps/mymap.yaml "/>
 
@@ -74,7 +75,7 @@
     <rosparam file="$(find my_robot)/include/local_costmap_params.yaml" command="load" ns="local_costmap"/>
     <rosparam file="$(find my_robot)/include/global_costmap_params.yaml" command="load" ns="global_costmap"/> 
     <rosparam file="$(find my_robot)/include/base_local_planner_params.yaml" command="load" />
-  </node>  
+  </node -->  
 
 </launch>
 
