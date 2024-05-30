@@ -1,6 +1,7 @@
 local_costmap:
-  update_frequency: 25.0
-  publish_frequency: 25.0
+  global_frame: map
+  update_frequency: 5.0
+  publish_frequency: 5.0
   transform_tolerance: 0.5
   static_map: false
   rolling_window: true
